@@ -37,14 +37,15 @@ bool test_modelSolver(string &file_name, int nb_color) {
 
 //精确交叉算符：
 bool test_crossOver(string &file_name, int nb_color) {
-    constexpr long long max_iter = 450 * 100;
-    constexpr int population = 10;
+    constexpr long long max_iter = 45 * 10;
+    constexpr int population = 5;
     UGraph graph(file_name);
     List<Solution> population_sl;
     List<Solution> population_sol;
     population_sl.reserve(population);
     population_sol.reserve(population);
     for (int i = 0; i < population; ++i) {
+        mylog << "种子" << i <<= logsw_info;
         population_sl.emplace_back(graph.node_num(), nb_color);
         population_sl[i].randomInit();
         mylog <<= logsw_info;
@@ -53,7 +54,7 @@ bool test_crossOver(string &file_name, int nb_color) {
         myrand.setSeed(t);
         mylog << "随机种子：" << t <<= logsw_info;
         TabuSearch tabu(max_iter,graph,population_sl[i]);              //做局部搜索的放在tabu中sl只给了初始解和颜色数
-        population_sol.emplace_back(tabu.solve());                       //sol：局部最优解（顶点-颜色），颜色数，冲突数
+        population_sol.emplace_back(tabu.solve());                       //sol：局部最优解（顶点-颜色），颜色数，冲突数,节点的冲突边数
         population_sol[i].print();
     }
     CrossOver crossover(graph,population_sol);
@@ -95,9 +96,9 @@ void benchmark(bool test(string&, int)) {
     //}
     //xxf:单独测试500.1算例
     for (int c_add = 0; c_add <= 5; ++c_add) {
-        string file_name = "Instances/DSJC" + instances_id[6] + ".col";
+        string file_name = "Instances/DSJC" + instances_id[0] + ".col";
         //int nb_color = best_known_colors[6] + c_add;
-        int nb_color = best_known_colors[6];
+        int nb_color = best_known_colors[0];
         ++count;
         mylog << "第" << count << "次测试" <<= LogSwitch(1, 1, "BenchMark");
         if (test(file_name, nb_color)) {

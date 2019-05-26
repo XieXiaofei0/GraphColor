@@ -9,13 +9,16 @@ namespace graph_coloring {
 //解的集合表示，保存解的集合和冲突节点
 struct SetSol {    
     List<Set<int>> sets_sol;
-    List<int> conflict_node;
+    List<bool> conflict_node;
+    SetSol(const List<Set<int>> &_sets_sol,const List<bool> _conflict_node) :
+    sets_sol(_sets_sol),conflict_node(_conflict_node){
+    }
 };
 
 class CrossOver {
 public:
     CrossOver(const UGraph &_graph, List<Solution> &_population_sol) :
-        graph(_graph), population_sol(_population_sol) {
+        graph(_graph), population_sol(_population_sol){
     };
     Solution solve();
     ~CrossOver();

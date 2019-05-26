@@ -52,27 +52,28 @@ public:
         node_colors_.resize(nb_node, -1);
     }
     Solution(int nb_color, int nb_conflict, List<int> &node_colors): nb_node_(node_colors.size()),
-        nb_color_(nb_color_), nb_conflict_(nb_conflict), node_colors_(node_colors) {}
-    Solution(int nb_color, int nb_conflict, List<int> &node_colors,const List<int> &node_conflict) : nb_node_(node_colors.size()),
-        nb_color_(nb_color_), nb_conflict_(nb_conflict), node_colors_(node_colors) {
-        is_conflict_node.reserve(nb_node_);
+        nb_color_(nb_color), nb_conflict_(nb_conflict), node_colors_(node_colors) {}
+    //xxf
+    Solution(int nb_color, int nb_conflict, List<int> &node_colors,const List<int> &node_conflict):
+        nb_node_(node_colors.size()),nb_color_(nb_color), nb_conflict_(nb_conflict), node_colors_(node_colors)
+    {
+        is_conflict_node_.reserve(node_conflict.size());
         for (auto i : node_conflict) {
-            if (i == 0)is_conflict_node.push_back(false);
-            else is_conflict.push_back(true);
+            if (i == 0)is_conflict_node_.push_back(false);
+            else is_conflict_node_.push_back(true);
         }
     }
+    //end xxf
     Solution(Solution &other) :nb_color_(other.nb_color_), nb_node_(other.nb_node_),
-        nb_conflict_(other.nb_conflict_), node_colors_(other.node_colors_) {}
+        nb_conflict_(other.nb_conflict_), node_colors_(other.node_colors_),is_conflict_node_(other.is_conflict_node_) {}
     Solution(Solution &&other) :nb_color_(other.nb_color_), nb_node_(other.nb_node_),
-        nb_conflict_(other.nb_conflict_), node_colors_(std::move(other.node_colors_)) {}
-    //Solution(const Solution &other) :nb_node_(other.nb_node_), nb_color_(other.nb_color_), nb_conflict_(other.nb_conflict_) {
-    //    node_colors_.resize(other.nb_node_, -1);
-    //}
+        nb_conflict_(other.nb_conflict_), node_colors_(std::move(other.node_colors_)), is_conflict_node_(std::move(other.is_conflict_node_)) {}
     Solution& operator= (Solution &rhs) {
         nb_color_ = rhs.nb_color_;
         nb_node_ = rhs.nb_node_;
         nb_conflict_ = rhs.nb_conflict_;
         node_colors_ = rhs.node_colors_;
+        is_conflict_node_ = rhs.is_conflict_node_;
         return *this;
     }
     Solution& operator= (Solution &&rhs) {
@@ -80,15 +81,10 @@ public:
         nb_node_ = rhs.nb_node_;
         nb_conflict_ = rhs.nb_conflict_;
         node_colors_ = std::move(rhs.node_colors_);
+        is_conflict_node_ = std::move(rhs.is_conflict_node_);
         return *this;
     }
 
-    //void init(int nb_node, int nb_color) {
-    //    nb_node_ = nb_node;
-    //    nb_color_ = nb_color;
-    //    nb_conflict_ = INT_MAX;
-    //    node_colors_.resize(nb_node, -1);
-    //}
     int& operator[] (int node) { return node_colors_[node]; }
     bool operator< (Solution &rhs) { return this->nb_conflict_ < rhs.nb_conflict_; }
     const List<int>& node_colors() const { return node_colors_; }
@@ -97,6 +93,7 @@ public:
 
     void set_nb_conflict(int num) { nb_conflict_ = num; }
     int nb_conflict() { return nb_conflict_; }
+    const List<bool>& is_conflict_node() const { return is_conflict_node_; }
 
     // 为节点随机分配颜色
     void randomInit();
@@ -107,7 +104,9 @@ private:
     int nb_node_;             // 要着色的顶点数目
     int nb_conflict_;         // 冲突边的数目
     List<int> node_colors_;   // 为每个节点染一种颜色
-    List<bool> is_conflict_node;   //记录节点是否是冲突节点
+    //xxf
+    List<bool> is_conflict_node_;   //记录节点是否是冲突节点
+    //xxf end
 };
 
 }
