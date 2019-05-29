@@ -26,19 +26,19 @@ bool test_tabuSearch(string &file_name, int nb_color) {
 }
 
 // 对模型进行测试，最大计算时间为60秒
-bool test_modelSolver(string &file_name, int nb_color) {
-    UGraph graph(file_name);
-    mylog << "颜色数：" << nb_color <<= logsw_info;
-    ModelSolver solver(graph, nb_color);
-    Solution sol = solver.solve();
-    sol.print();
-    return sol.valid_solution();
-}
+//bool test_modelSolver(string &file_name, int nb_color) {
+//    UGraph graph(file_name);
+//    mylog << "颜色数：" << nb_color <<= logsw_info;
+//    ModelSolver solver(graph, nb_color);
+//    Solution sol = solver.solve();
+//    sol.print();
+//    return sol.valid_solution();
+//}
 
-//精确交叉算符：
+//精确交叉算符：局部搜索迭代步数为max_iter,种群个数为population，交叉解的个数为2（若是所有解进行交叉，CrossOver.cpp中random_two_sol函数使用第二种）
 bool test_crossOver(string &file_name, int nb_color) {
     constexpr long long max_iter = 45 * 10;
-    constexpr int population = 5;
+    constexpr int population = 7;
     UGraph graph(file_name);
     List<Solution> population_sl;
     List<Solution> population_sol;
@@ -48,7 +48,7 @@ bool test_crossOver(string &file_name, int nb_color) {
         mylog << "种子" << i <<= logsw_info;
         population_sl.emplace_back(graph.node_num(), nb_color);
         population_sl[i].randomInit();
-        mylog <<= logsw_info;
+        mylog << "初始解构造完成" <<= logsw_info;
         mylog << "颜色数：" << population_sl[i].nb_color() <<= logsw_info;
         time_t t = time(0);
         myrand.setSeed(t);
@@ -57,13 +57,9 @@ bool test_crossOver(string &file_name, int nb_color) {
         population_sol.emplace_back(tabu.solve());                       //sol：局部最优解（顶点-颜色），颜色数，冲突数,节点的冲突边数
         population_sol[i].print();
     }
-    CrossOver crossover(graph,population_sol);
+    CrossOver crossover(graph, population_sol, population_sl[0].nb_color());
     Solution sol = crossover.solve();
     sol.print();
-    //return sol.valid_solution();
-    //TODO:精确的交叉算符的解
-    //TODO:替换群中最好的解
-    //TODO:直到最好的解冲突值为0
     return true;
 }
 

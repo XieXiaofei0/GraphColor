@@ -50,9 +50,12 @@ public:
     Solution(int nb_node = 0, int nb_color = 0) :
         nb_node_(nb_node), nb_color_(nb_color), nb_conflict_(INT_MAX) {
         node_colors_.resize(nb_node, -1);
+        is_conflict_node_.resize(nb_node, false);
     }
     Solution(int nb_color, int nb_conflict, List<int> &node_colors): nb_node_(node_colors.size()),
-        nb_color_(nb_color), nb_conflict_(nb_conflict), node_colors_(node_colors) {}
+        nb_color_(nb_color), nb_conflict_(nb_conflict), node_colors_(node_colors) {
+        is_conflict_node_.resize(node_colors.size(), false);
+    }
     //xxf
     Solution(int nb_color, int nb_conflict, List<int> &node_colors,const List<int> &node_conflict):
         nb_node_(node_colors.size()),nb_color_(nb_color), nb_conflict_(nb_conflict), node_colors_(node_colors)
@@ -106,6 +109,7 @@ private:
     List<int> node_colors_;   // 为每个节点染一种颜色
     //xxf
     List<bool> is_conflict_node_;   //记录节点是否是冲突节点
+    List<Set<int>> color_set_sol;    //根据每个节点的颜色分集合
     //xxf end
 };
 

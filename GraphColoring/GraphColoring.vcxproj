@@ -148,16 +148,16 @@
     <ClCompile Include="CrossOver.cpp" />
     <ClCompile Include="InputOutput.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ModelSolver.cpp" />
+    <ClCompile Include="SetCoverModel.cpp" />
     <ClCompile Include="TabuSearch.cpp" />
     <ClCompile Include="utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
+    <ClInclude Include="SetCoverModel.h" />
     <ClInclude Include="CrossOver.h" />
     <ClInclude Include="InputOutput.h" />
     <ClInclude Include="Macros.h" />
-    <ClInclude Include="ModelSolver.h" />
     <ClInclude Include="TabuSearch.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
