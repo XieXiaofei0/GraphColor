@@ -25,7 +25,7 @@ private:
     int nb_color;
 
     List<int> cross_solu_index;        //记录要交叉的解在population_sol中的索引
-    List<SetSol> set_of_crosssols;        //保存两个解的集合
+    List<SetSol> set_of_crosssols;        //保存两个解的集合 xxf
 };
 
 }
