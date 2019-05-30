@@ -96,7 +96,9 @@ public:
 
     void set_nb_conflict(int num) { nb_conflict_ = num; }
     int nb_conflict() { return nb_conflict_; }
-    const List<bool>& is_conflict_node() const { return is_conflict_node_; }
+    //xxf
+    bool is_conflict_node(int node) { return is_conflict_node_[node]; }
+    //xxf end
 
     // 为节点随机分配颜色
     void randomInit();
@@ -109,7 +111,6 @@ private:
     List<int> node_colors_;   // 为每个节点染一种颜色
     //xxf
     List<bool> is_conflict_node_;   //记录节点是否是冲突节点
-    List<Set<int>> color_set_sol;    //根据每个节点的颜色分集合
     //xxf end
 };
 

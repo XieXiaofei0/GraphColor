@@ -35,15 +35,18 @@ bool test_tabuSearch(string &file_name, int nb_color) {
 //    return sol.valid_solution();
 //}
 
-//精确交叉算符：局部搜索迭代步数为max_iter,种群个数为population，交叉解的个数为2（若是所有解进行交叉，CrossOver.cpp中random_two_sol函数使用第二种）
+//精确交叉算符：局部搜索迭代步数为max_iter,种群个数为population，交叉解的个数为crossnum，冲突节点的权重值为weight_con_node
 bool test_crossOver(string &file_name, int nb_color) {
     constexpr long long max_iter = 45 * 10;
-    constexpr int population = 7;
+    constexpr int max_population = 200;
+    constexpr int population = 10;
+    constexpr int crossnum = 2;
+    constexpr double weight_con_node = 0.6;
     UGraph graph(file_name);
     List<Solution> population_sl;
     List<Solution> population_sol;
     population_sl.reserve(population);
-    population_sol.reserve(population);
+    population_sol.reserve(max_population);
     for (int i = 0; i < population; ++i) {
         mylog << "种子" << i <<= logsw_info;
         population_sl.emplace_back(graph.node_num(), nb_color);
@@ -55,9 +58,9 @@ bool test_crossOver(string &file_name, int nb_color) {
         mylog << "随机种子：" << t <<= logsw_info;
         TabuSearch tabu(max_iter,graph,population_sl[i]);              //做局部搜索的放在tabu中sl只给了初始解和颜色数
         population_sol.emplace_back(tabu.solve());                       //sol：局部最优解（顶点-颜色），颜色数，冲突数,节点的冲突边数
-        population_sol[i].print();
+        //population_sol[i].print();
     }
-    CrossOver crossover(graph, population_sol, population_sl[0].nb_color());
+    CrossOver crossover(graph, max_population, weight_con_node, population_sol, crossnum, population_sl[0].nb_color());
     Solution sol = crossover.solve();
     sol.print();
     return true;

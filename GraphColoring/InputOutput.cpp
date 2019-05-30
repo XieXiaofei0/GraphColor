@@ -101,9 +101,6 @@ void Solution::print() {
         mylog << i + 1 << "->" << node_colors_[i] + 1 << " ";
     }
     mylog <<= logsw_info;
-    //添加颜色集合包含的节点输出
-    mylog << "颜色集合包含节点如下：" <<= logsw_info;
-    for
 }
 
 }
