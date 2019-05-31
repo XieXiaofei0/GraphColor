@@ -15,11 +15,15 @@ LogSwitch logsw_modelSolver(1, 1, "ModelSolver");
 String itos(int i) { stringstream s; s << i; return s.str(); }
 bool equal(double lhs, double rhs, double eps = 0.00001) { return abs(lhs - rhs) < eps; }
 
-SetCover::SetCover(int _cross_num, int _nb_color, const double _weight, const UGraph &_graph, List<Solution> &_population_sol, Set<int> &_cross_sol_index) {
+SetCover::SetCover(int _cross_num, int _nb_color, const UGraph &_graph, List<Solution> &_population_sol, Set<int> &_cross_sol_index, double
+    _weight , double _min_conf , double _max_conf , double _timeout_second ) {
     cross_num = _cross_num;
     nb_color = _nb_color;
     nb_node = _graph.node_num();
     weight = _weight;
+    at_least_sets_conf = _min_conf;
+    at_more_sets_conf = _max_conf;
+    timeout_second = _timeout_second;
     cross_sets.resize(cross_num*nb_color, Set<int>());
     set_parent_index.resize(cross_num*nb_color, -1);
     is_node_conflict_parent.resize(nb_node, List<double>(cross_num, 1));
@@ -37,12 +41,20 @@ SetCover::SetCover(int _cross_num, int _nb_color, const double _weight, const UG
     }
 }
 
-//TODO:
+//集合覆盖返回
 SetOfSol SetCover::solve() {
-
+    Set<int> select_set_index;
+    select_set_index.clear();
+    if (setcover_model(select_set_index)) {
+        return remove_dupnodes_add_nodes(select_set_index);
+    }
+    else {
+        mylog << "集合覆盖模型无可行解" <<= logsw_info;
+        return SetOfSol();
+    }
 }
 
-//TODO：转换为集合覆盖的模型，将选中的集合索引保存在_select_set_index
+//转换为集合覆盖的模型，将选中的集合索引保存在_select_set_index
 bool SetCover::setcover_model(Set<int> &_select_set_index) {
     int num_of_set = cross_sets.size();
     int num_of_node = nb_node;
@@ -81,14 +93,63 @@ bool SetCover::setcover_model(Set<int> &_select_set_index) {
         }
         model.addConstr(expr2, GRB_LESS_EQUAL, node_set_index[n].size() - 1, "aux_y_" + itos(n));
     }
-    //集合总数量约束
+    //集合总数量约束 >= C
+    GRBLinExpr expr3;
+    for (int s = 0; s < num_of_set; ++s) {
+        expr3 += s_set[s];
+    }
+    model.addConstr(expr3, GRB_EQUAL, nb_color, "num_of_set_" + itos(nb_color));
     //单个父代所选集合的数量约束
+    int min = at_least_sets_conf * (nb_color / cross_num);
+    int max = at_more_sets_conf * (nb_color / cross_num);
+    for (int i = 0; i < parent_set_index.size(); ++i) {
+        GRBLinExpr expr;
+        Set<int>::iterator it = parent_set_index[i].begin();
+        for (; it != parent_set_index[i].end(); ++it) {
+            expr += s_set[*it];
+        }
+        model.addConstr(expr, GRB_GREATER_EQUAL, min, "parent_" + itos(i) + "_min");
+        model.addConstr(expr, GRB_LESS_EQUAL, max, "parent_" + itos(i) + "_max");
+    }
+    //目标:
+    GRBLinExpr obj = 0.0;
+    for (int n = 0; n < num_of_node; ++n)obj += l_node[n];
+    model.setObjective(obj, GRB_MAXIMIZE);
 
+    mylog << "开始优化模型1" <<= logsw_modelSolver;
+    model.optimize();
+
+    int status = model.get(GRB_IntAttr_Status);
+    bool have_select = false;
+    if (status == GRB_OPTIMAL) {
+        for (int s = 0; s < num_of_set; ++s) {
+            if (equal(s_set[s].get(GRB_DoubleAttr_X), 1.0))_select_set_index.insert(s);
+        }
+        have_select = true;
+        mylog << "获取可行解" <<= logsw_modelSolver;
+    } else if (status == GRB_INFEASIBLE) {
+        mylog << "无可行解" <<= logsw_modelSolver;
+        model.computeIIS();
+        model.write("iis.ilp");
+    }
+    return have_select;
 }
 
 //TODO
 SetOfSol SetCover::remove_dupnodes_add_nodes(const Set<int> &_select_set_index) {
+    List<Set<int>> sol_set(nb_color, Set<int>());
+    Set<int> add_nodes;
+    for (int n = 0; n < nb_node; ++n) {
+        vector<int> repeat_node(cross_num);    //记录重复节点所在的集合索引
+        vector<int>::iterator it;
+        it = set_intersection(_select_set_index.begin(), _select_set_index.end(), node_set_index[n].begin(), node_set_index[n].end(), it);
+        repeat_node.resize(it - repeat_node.begin());
+        if (repeat_node.size() == 0) {    //未加入的节点
+            add_nodes.insert(n);
+        } else if (repeat_node.size() > 1) {   //重复出现的节点
 
+        }
+    }
 }
 
 }

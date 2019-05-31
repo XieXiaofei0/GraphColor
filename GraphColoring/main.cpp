@@ -37,11 +37,10 @@ bool test_tabuSearch(string &file_name, int nb_color) {
 
 //精确交叉算符：局部搜索迭代步数为max_iter,种群个数为population，交叉解的个数为crossnum，冲突节点的权重值为weight_con_node
 bool test_crossOver(string &file_name, int nb_color) {
-    constexpr long long max_iter = 45 * 10;
+    constexpr long long max_iter = 45 * 100;
     constexpr int max_population = 200;
     constexpr int population = 10;
-    constexpr int crossnum = 2;
-    constexpr double weight_con_node = 0.6;
+    constexpr int crossnum = 2;         //注意：交叉的个数不能超过颜色数，且模型中取每个父带的集合数的最小最大参数要根据交叉的个数定
     UGraph graph(file_name);
     List<Solution> population_sl;
     List<Solution> population_sol;
@@ -60,9 +59,9 @@ bool test_crossOver(string &file_name, int nb_color) {
         population_sol.emplace_back(tabu.solve());                       //sol：局部最优解（顶点-颜色），颜色数，冲突数,节点的冲突边数
         //population_sol[i].print();
     }
-    CrossOver crossover(graph, max_population, weight_con_node, population_sol, crossnum, population_sl[0].nb_color());
-    Solution sol = crossover.solve();
-    sol.print();
+    CrossOver crossover(graph, max_population, population_sol, crossnum, population_sl[0].nb_color());
+    bool flag = crossover.solve();
+    //sol.print();
     return true;
 }
 
@@ -95,9 +94,8 @@ void benchmark(bool test(string&, int)) {
     //}
     //xxf:单独测试500.1算例
     for (int c_add = 0; c_add <= 5; ++c_add) {
-        string file_name = "Instances/DSJC" + instances_id[0] + ".col";
-        //int nb_color = best_known_colors[6] + c_add;
-        int nb_color = best_known_colors[0];
+        string file_name = "Instances/DSJC" + instances_id[6] + ".col";
+        int nb_color = best_known_colors[6];
         ++count;
         mylog << "第" << count << "次测试" <<= LogSwitch(1, 1, "BenchMark");
         if (test(file_name, nb_color)) {
