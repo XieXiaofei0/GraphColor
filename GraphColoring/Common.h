@@ -6,8 +6,12 @@
 #include <map>
 #include <unordered_map>
 #include <string>
+#include <utility>
 
 namespace graph_coloring {
+
+template<typename T,typename N>
+using Pair = std::pair<T, N>;
 
 template<typename T>
 using List = std::vector<T>;

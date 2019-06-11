@@ -4,6 +4,7 @@
 #include "InputOutput.h"
 #include "utility.h"
 #include "SetCoverModel.h"
+#include "CoverRemainModel.h"
 
 namespace graph_coloring {
 

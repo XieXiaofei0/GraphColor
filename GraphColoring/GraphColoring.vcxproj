@@ -145,6 +145,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CoverRemainModel.cpp" />
     <ClCompile Include="CrossOver.cpp" />
     <ClCompile Include="InputOutput.cpp" />
     <ClCompile Include="main.cpp" />
@@ -154,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
+    <ClInclude Include="CoverRemainModel.h" />
     <ClInclude Include="SetCoverModel.h" />
     <ClInclude Include="CrossOver.h" />
     <ClInclude Include="InputOutput.h" />

@@ -33,6 +33,9 @@
     <ClCompile Include="SetCoverModel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CoverRemainModel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TabuSearch.h">
@@ -54,6 +57,9 @@
       <Filter>资源文件</Filter>
     </ClInclude>
     <ClInclude Include="SetCoverModel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CoverRemainModel.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

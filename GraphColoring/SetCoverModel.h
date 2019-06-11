@@ -7,14 +7,12 @@
 namespace graph_coloring {
 
 //结构体：保存一个交叉解的集合和未加入的节点
-//TODO:相关构造函数
 struct SetOfSol {
     SetOfSol() {
         color_set.resize(0, Set<int>());
         to_add_nodes.clear();
     }
-    SetOfSol() {
-    }
+    SetOfSol(List<Set<int>> &_color_set, Set<int> &_to_add_nodes) :color_set(_color_set), to_add_nodes(_to_add_nodes) {}
     SetOfSol(SetOfSol &other) :color_set(other.color_set), to_add_nodes(other.to_add_nodes) {}
     SetOfSol(SetOfSol &&other) :color_set(std::move(other.color_set)), to_add_nodes(std::move(other.to_add_nodes)) {}
     SetOfSol& operator= (SetOfSol &rhs) {
@@ -56,13 +54,5 @@ private:
 };
 
 }
-
-//    SetSol(List<Set<int>> &_sets_sol, const List<bool> &_conflict_node) :
-//        sets_sol(_sets_sol), conflict_node(_conflict_node) {
-//    }
-//    SetSol(List<Set<int>> &_sets_sol, int _nb_node) :
-//        sets_sol(_sets_sol) {
-//        conflict_node.resize(_nb_node, false);
-//    }
 
 #endif // ! GRAPHCOLORING_SETCOVERMODEL_H

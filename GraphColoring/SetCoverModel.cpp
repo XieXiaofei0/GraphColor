@@ -135,23 +135,42 @@ bool SetCover::setcover_model(Set<int> &_select_set_index) {
     return have_select;
 }
 
-//TODO
+//对模型选出的集合进行处理：针对重复的节点和未在集合中的节点
 SetOfSol SetCover::remove_dupnodes_add_nodes(const Set<int> &_select_set_index) {
     List<Set<int>> sol_set(nb_color, Set<int>());
     Set<int> add_nodes;
     for (int n = 0; n < nb_node; ++n) {
         vector<int> repeat_node(cross_num);    //记录重复节点所在的集合索引
-        vector<int>::iterator it;
-        it = set_intersection(_select_set_index.begin(), _select_set_index.end(), node_set_index[n].begin(), node_set_index[n].end(), it);
+        auto it = set_intersection(_select_set_index.begin(), _select_set_index.end(), node_set_index[n].begin(), node_set_index[n].end(), repeat_node.begin());
         repeat_node.resize(it - repeat_node.begin());
-        if (repeat_node.size() == 0) {    //未加入的节点
+        if (repeat_node.size() == 0) {    //未加入的节点，即节点n未出现在模型找出的集合中
             add_nodes.insert(n);
         } else if (repeat_node.size() > 1) {   //重复出现的节点
-
+            List<int> no_conflict_sets;
+            List<int> conflict_sets;
+            for (int i = 0; i < repeat_node.size(); ++i) {
+                if (equal(is_node_conflict_parent[n][set_parent_index[repeat_node[i]]], 1))no_conflict_sets.push_back(repeat_node[i]);  //未冲突集合
+                else conflict_sets.push_back(repeat_node[i]);
+            }
+            int select_set_index;
+            if (no_conflict_sets.size() != 0) {  //从未冲突集合中随机选一个，删除其余集合中的此节点
+                select_set_index = no_conflict_sets[myrand.gen((int)no_conflict_sets.size() - 1)];
+            } else {   //所选出的集合都是带冲突的，随机选一个
+                select_set_index = conflict_sets[myrand.gen((int)conflict_sets.size() - 1)];
+            }
+            for (int i = 0; i < repeat_node.size(); ++i) {
+                if (repeat_node[i] == select_set_index)continue;
+                cross_sets[repeat_node[i]].erase(n);
+            }
         }
     }
+    int num = 0;
+    for (auto index : _select_set_index) {
+        sol_set[num].insert(cross_sets[index].begin(), cross_sets[index].end());
+        ++num;
+    }
+    return SetOfSol(sol_set, add_nodes);
 }
-
 }
 
 //namespace graph_coloring{

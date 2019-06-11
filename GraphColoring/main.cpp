@@ -39,7 +39,7 @@ bool test_tabuSearch(string &file_name, int nb_color) {
 bool test_crossOver(string &file_name, int nb_color) {
     constexpr long long max_iter = 45 * 100;
     constexpr int max_population = 200;
-    constexpr int population = 10;
+    constexpr int population = 5;
     constexpr int crossnum = 2;         //注意：交叉的个数不能超过颜色数，且模型中取每个父带的集合数的最小最大参数要根据交叉的个数定
     UGraph graph(file_name);
     List<Solution> population_sl;
@@ -94,8 +94,8 @@ void benchmark(bool test(string&, int)) {
     //}
     //xxf:单独测试500.1算例
     for (int c_add = 0; c_add <= 5; ++c_add) {
-        string file_name = "Instances/DSJC" + instances_id[6] + ".col";
-        int nb_color = best_known_colors[6];
+        string file_name = "Instances/DSJC" + instances_id[3] + ".col";
+        int nb_color = best_known_colors[3];
         ++count;
         mylog << "第" << count << "次测试" <<= LogSwitch(1, 1, "BenchMark");
         if (test(file_name, nb_color)) {
