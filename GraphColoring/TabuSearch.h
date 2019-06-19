@@ -9,6 +9,8 @@ class TabuSearch {
 public:
     TabuSearch(long long max_iter, const UGraph &_graph, const Solution &_init_sol);
     Solution solve();
+    //xxf:¡Ÿ ±   
+    int num_of_conflict() { return EDGE_STACK.size(); }
 private:
     void update_prm_moves();
     void update_zero_moves();

@@ -11,6 +11,29 @@ struct Edge {
     //double weight;
 };
 
+//结构体：保存一个交叉解的集合和未加入的节点
+struct SetOfSol {
+    SetOfSol() {
+        color_set.resize(0, Set<int>());
+        to_add_nodes.clear();
+    }
+    SetOfSol(List<Set<int>> &_color_set, Set<int> &_to_add_nodes) :color_set(_color_set), to_add_nodes(_to_add_nodes) {}
+    SetOfSol(SetOfSol &other) :color_set(other.color_set), to_add_nodes(other.to_add_nodes) {}
+    SetOfSol(SetOfSol &&other) :color_set(std::move(other.color_set)), to_add_nodes(std::move(other.to_add_nodes)) {}
+    SetOfSol& operator= (SetOfSol &rhs) {
+        color_set = rhs.color_set;
+        to_add_nodes = rhs.to_add_nodes;
+        return *this;
+    }
+    SetOfSol& operator=(SetOfSol &&rhs) {
+        color_set = std::move(rhs.color_set);
+        to_add_nodes = std::move(rhs.to_add_nodes);
+        return *this;
+    }
+    List<Set<int>> color_set;
+    Set<int> to_add_nodes;
+};
+
 // 无向图，采用邻接表储存
 class UGraph {
 public:
@@ -100,6 +123,8 @@ public:
     bool is_conflict_node(int node) { return is_conflict_node_[node]; }
     //xxf end
 
+    //xxf  根据颜色集合为节点分配颜色
+    void setInit(const SetOfSol &_setsol);       
     // 为节点随机分配颜色
     void randomInit();
     // 打印结果

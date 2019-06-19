@@ -94,13 +94,21 @@ void Solution::randomInit() {
     }
 }
 
+void Solution::setInit(const SetOfSol &_setsol) {
+    for (int i = 0; i < _setsol.color_set.size(); ++i) {
+        for (auto j : _setsol.color_set[i]) {
+            node_colors_[j] = i;
+        }
+    }
+}
+
 void Solution::print() {
     mylog << "解的冲突边数目为：" << nb_conflict_ <<= logsw_info;
-    mylog << "节点->颜色值分配如下：" <<= logsw_info;
-    for (int i = 0; i < node_colors_.size(); ++i) {
-        mylog << i + 1 << "->" << node_colors_[i] + 1 << " ";
-    }
-    mylog <<= logsw_info;
+    //mylog << "节点->颜色值分配如下：" <<= logsw_info;
+    //for (int i = 0; i < node_colors_.size(); ++i) {
+    //    mylog << i + 1 << "->" << node_colors_[i] + 1 << " ";
+    //}
+    //mylog <<= logsw_info;
 }
 
 }

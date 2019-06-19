@@ -23,7 +23,7 @@ private:
     List<Pair<int, int>> edges_in_addnodes;   //待加入节点之间的边集合
 
     //临时变量
-    List<Pair<int, int>> temp_node_color;     
+    //List<Pair<int, int>> temp_node_color;     //保存模型求解的节点index-color对
 };
 
 }

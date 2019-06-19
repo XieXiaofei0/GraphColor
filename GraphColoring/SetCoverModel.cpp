@@ -109,7 +109,7 @@ bool SetCover::setcover_model(Set<int> &_select_set_index) {
             expr += s_set[*it];
         }
         model.addConstr(expr, GRB_GREATER_EQUAL, min, "parent_" + itos(i) + "_min");
-        model.addConstr(expr, GRB_LESS_EQUAL, max, "parent_" + itos(i) + "_max");
+        //model.addConstr(expr, GRB_LESS_EQUAL, max, "parent_" + itos(i) + "_max");
     }
     //目标:
     GRBLinExpr obj = 0.0;
@@ -135,7 +135,7 @@ bool SetCover::setcover_model(Set<int> &_select_set_index) {
     return have_select;
 }
 
-//对模型选出的集合进行处理：针对重复的节点和未在集合中的节点
+//对模型选出的集合进行处理：针对重复的节点和未在集合中的节点    TODO:测试细节
 SetOfSol SetCover::remove_dupnodes_add_nodes(const Set<int> &_select_set_index) {
     List<Set<int>> sol_set(nb_color, Set<int>());
     Set<int> add_nodes;

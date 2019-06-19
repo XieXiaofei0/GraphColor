@@ -13,6 +13,7 @@ LogSwitch logsw_modelSolver2(1, 1, "Modle2Solver");
 String itos(int i);
 bool equal(double lhs, double rhs, double eps = 0.00001);
 
+//TODO：测试细节
 CoverRemain::CoverRemain(SetOfSol &_set_sol, const UGraph &graph):set_sol(_set_sol){
     nb_color = set_sol.color_set.size();
     nb_to_add_nodes = set_sol.to_add_nodes.size();
@@ -29,8 +30,7 @@ CoverRemain::CoverRemain(SetOfSol &_set_sol, const UGraph &graph):set_sol(_set_s
         Set<int> adj_nodes;    //保存节点n的相邻节点集合
         for (auto adj_node : graph[to_add_nodes[n]]) adj_nodes.insert(adj_node);
         List<int> temp_repeat(nb_to_add_nodes);      //保存重复节点
-        //List<int>::iterator it;
-        auto it = set_intersection(adj_nodes.begin(), adj_nodes.end(), set_sol.to_add_nodes.begin(), set_sol.to_add_nodes.end(), temp_repeat.begin());
+        List<int>::iterator it = set_intersection(adj_nodes.begin(), adj_nodes.end(), set_sol.to_add_nodes.begin(), set_sol.to_add_nodes.end(), temp_repeat.begin());
         temp_repeat.resize(it - temp_repeat.begin());
         for (int i = 0; i < temp_repeat.size(); ++i) { 
             if (n < node_index[temp_repeat[i]]) {             //去掉重复边
@@ -39,15 +39,13 @@ CoverRemain::CoverRemain(SetOfSol &_set_sol, const UGraph &graph):set_sol(_set_s
         }
         for (int i = 0; i < set_sol.color_set.size(); ++i) {
             List<int> temp(set_sol.color_set[i].size());
-            //List<int>::iterator it;
-            auto it = set_intersection(adj_nodes.begin(), adj_nodes.end(), set_sol.color_set[i].begin(), set_sol.color_set[i].end(), temp.begin());
-            temp.resize(it - temp_repeat.begin());
+            List<int>::iterator  it = set_intersection(adj_nodes.begin(), adj_nodes.end(), set_sol.color_set[i].begin(), set_sol.color_set[i].end(), temp.begin());
+            temp.resize(it - temp.begin());
             nb_conflicts_sets[n][i] = temp.size();
         }
     }
 }
 
-//TODO:将剩余节点加入set_sol的cross_set中
 bool CoverRemain::model_solve() {
     int num_of_color = nb_color;
     int num_of_renodes = nb_to_add_nodes;
@@ -98,17 +96,23 @@ bool CoverRemain::model_solve() {
     int status = model.get(GRB_IntAttr_Status);
     bool have_solve = false;
     if (status == GRB_OPTIMAL) {
-        temp_node_color.reserve(num_of_renodes);
+        //temp_node_color.reserve(num_of_renodes);
         for (int n = 0; n < num_of_renodes; ++n) {
             for (int c = 0; c < num_of_color; ++c) {
                 if (equal(x_node_color[n][c].get(GRB_DoubleAttr_X), 1.0)) {
                     //TODO:将剩余节点加入set_sol的cross_set中
-                    temp_node_color.push_back(make_pair(to_add_nodes[n], c));
+                    //temp_node_color.push_back(make_pair(to_add_nodes[n], c));
+                    set_sol.color_set[c].insert(to_add_nodes[n]);
                 }
             }
         }
         have_solve = true;
         mylog << "获取可行解" <<= logsw_modelSolver2;
+        //cout << "剩余节点对应的颜色集合：" << endl;
+        //for (int i = 0; i < temp_node_color.size(); ++i) {
+        //    cout << temp_node_color[i].first << "---" << temp_node_color[i].second << "   ";
+        //}
+        //cout << endl;
     }
     else if (status == GRB_INFEASIBLE) {
         mylog << "无可行解" <<= logsw_modelSolver2;

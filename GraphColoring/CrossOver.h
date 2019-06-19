@@ -5,6 +5,7 @@
 #include "utility.h"
 #include "SetCoverModel.h"
 #include "CoverRemainModel.h"
+#include "TabuSearch.h"
 
 namespace graph_coloring {
 
