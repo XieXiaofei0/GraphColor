@@ -26,14 +26,14 @@ bool test_tabuSearch(string &file_name, int nb_color) {
 }
 
 // 对模型进行测试，最大计算时间为60秒
-//bool test_modelSolver(string &file_name, int nb_color) {
-//    UGraph graph(file_name);
-//    mylog << "颜色数：" << nb_color <<= logsw_info;
-//    ModelSolver solver(graph, nb_color);
-//    Solution sol = solver.solve();
-//    sol.print();
-//    return sol.valid_solution();
-//}
+bool test_modelSolver(string &file_name, int nb_color) {
+    UGraph graph(file_name);
+    mylog << "颜色数：" << nb_color <<= logsw_info;
+    ModelSolver solver(graph, nb_color);
+    Solution sol = solver.solve();
+    sol.print();
+    return sol.valid_solution();
+}
 
 //精确交叉算符：局部搜索迭代步数为max_iter,种群个数为population，交叉解的个数为crossnum，冲突节点的权重值为weight_con_node
 bool test_crossOver(string &file_name, int nb_color) {
@@ -107,9 +107,9 @@ void benchmark(bool test(string&, int)) {
 }
 
 int main(int argc, char* argv[]) {
-    //benchmark(test_tabuSearch);
+    benchmark(test_tabuSearch);
     //benchmark(test_modelSolver);
-    benchmark(test_crossOver);
+    //benchmark(test_crossOver);
     system("pause");
     return 0;
 }
